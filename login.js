@@ -53,9 +53,18 @@ app.get("/admin", verifyToken, checkAdminRole, (req, res) => {
 });
 const helmet = require("helmet");
 app.use(helmet());
-const csrf = require("csrf");
+const csrf = require("csurf");
 const csrfProtection = csrf({ cookie: true });
 app.use(csrfProtection);
 app.get("/form", (req, res) => {
   res.render("form", { csrfToken: req.csrfToken() });
+});
+app.use((err, req, res, next) => {
+  console.log(err.stack);
+  res.status(500).json({ message: "Erreur serveur" });
+});
+
+app.get("/debug", (req, res) => {
+  console.log("Requête reçue pour /debug");
+  res.send("debug ok");
 });
