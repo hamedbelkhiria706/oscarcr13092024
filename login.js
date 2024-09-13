@@ -51,3 +51,11 @@ const checkAdminRole = (req, res, next) => {
 app.get("/admin", verifyToken, checkAdminRole, (req, res) => {
   req.json({ message: "Bienvenue Admin!" });
 });
+const helmet = require("helmet");
+app.use(helmet());
+const csrf = require("csrf");
+const csrfProtection = csrf({ cookie: true });
+app.use(csrfProtection);
+app.get("/form", (req, res) => {
+  res.render("form", { csrfToken: req.csrfToken() });
+});
