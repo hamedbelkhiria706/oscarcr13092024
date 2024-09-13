@@ -38,3 +38,16 @@ const verifyToken = (req, res, next) => {
 app.get("/profile", verifyToken, (req, res) => {
   res.json({ message: `Bienvenue ${req.user.username} ` });
 });
+
+const checkAdminRole = (req, res, next) => {
+  if (req.user.role != "admin") {
+    return res
+      .status(403)
+      .json({ message: "accès reservé aux administrateurs" });
+  }
+  next();
+};
+//Route protegée pour les admins seulement
+app.get("/admin", verifyToken, checkAdminRole, (req, res) => {
+  req.json({ message: "Bienvenue Admin!" });
+});
